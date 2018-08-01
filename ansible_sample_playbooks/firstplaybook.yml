@@ -1,0 +1,55 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+  - name: Install Apache webserver
+    when: ansible_os_family=="RedHat"
+    yum:
+       name: httpd
+       state: latest
+
+  - name: Install Apache Weberser 
+    apt:
+       name: apache2
+       state: latest
+    when: ansible_os_family=="Debian"
+
+  - name: Start Apache Service
+    service:
+       name: httpd
+       state: started
+    when: ansible_os_family=="RedHat"
+ 
+  - name: Start apache Service
+    service:
+       name: apache2
+       state: started
+    when: ansible_os_family=="Debian"
+
+  - name: enable Apache Service
+    service: 
+       name: httpd
+       enabled: yes
+    when: ansible_os_family=="RedHat"
+
+  - name: enable Apache Service
+    service:
+       name: apache2
+       enabled: yes
+    when: ansible_os_family=="Debian"
+
+  - name: Check apache service
+    command: service httpd status
+    when: ansible_os_family=="RedHat"
+    register: apache_status
+
+  - debug: var=apache_status.stdout_lines
+
+  - name: Check APache service
+    command: service apache2 status
+    when: ansible_os_family=="Debian"
+    register: apache2
+  
+  - debug: var=apache2.stdout_lines

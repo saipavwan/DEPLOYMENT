@@ -1,0 +1,20 @@
+---
+- name: Erase ntp
+  command: sudo yum erase ntp* -y
+
+- name: Chrony | Install chrony
+  yum:
+    name: chrony
+    state: present
+
+- name: chrony | Configure Chrony file
+  template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+  notify: Restart Chrony
+
+- name: Chrony | Start the Chroy service
+  service:
+    name: chronyd
+    state: started
+    enabled: yes

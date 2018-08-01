@@ -1,0 +1,38 @@
+---
+- name: yum | Ensure deltarpm is installed (before updating CentOS packages)
+  yum:
+    name: deltarpm
+    state: latest
+  tags: yum
+
+- name: yum | Ensure libselinux-python is installed (before updating CentOS packages)
+  yum:
+    name: libselinux-python
+    state: latest
+  tags: yum
+
+- name: yum | Import repo GPG key(s)
+  copy:
+    src: "{{ item }}"
+    dest: /etc/pki/rpm-gpg/
+    owner: root
+    group: root
+    mode: 644
+  with_items: "{{ gpg_keys }}"
+  tags: yum
+
+- name: yum | Install extra repositories
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ repo_rpms }}"
+  ignore_errors: True
+  tags: yum
+
+
+- name: yum | Update CentOS packages
+  yum:
+    name: "*"
+    state: latest
+    update_cache: yes
+  tags: yum

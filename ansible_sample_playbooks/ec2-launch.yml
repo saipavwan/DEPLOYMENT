@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  gather_facts: no
+
+
+  vars:
+     region: ap-south-1
+     instance_type: t2.micro
+     ami_id: ami-7c8ead13
+     sg_group: sgAnsibleDemo
+     private_key: AnsibleDemo
+
+
+  tasks:
+  - include: ./keys.yml
+  - name: Launch EC2 Ubuntu
+    ec2:
+       region: "{{ region }}"
+       instance_type: "{{ instance_type }}"
+       image: "{{ ami_id }}"
+       group: "{{ sg_group }}"
+       key_name: "{{ private_key }}"
+       aws_access_key: "{{ ackey }}"
+       aws_secret_key: "{{ sekey }}"
+    register: ec2
+
+  - debug: var=ec2
+       

@@ -1,0 +1,11 @@
+---
+- name: python | install pip
+  easy_install: 
+       name: pip
+       state: latest
+
+- name: python | install python packages
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ python_packages }}"

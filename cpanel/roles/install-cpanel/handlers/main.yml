@@ -1,0 +1,5 @@
+---
+- name: Resart Chrony
+  service:
+    name: chronyd
+    state: restarted

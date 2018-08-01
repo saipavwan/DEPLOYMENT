@@ -1,0 +1,7 @@
+---
+- hosts: cpanel
+  gather_facts: yes
+  become: true
+
+  roles:
+  - install-cpanel

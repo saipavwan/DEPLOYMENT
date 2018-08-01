@@ -1,0 +1,20 @@
+---
+jdk_major_version: 8
+jdk_minor_version: 161
+jdk_download_path: "{{ jdk_major_version }}u{{ jdk_minor_version }}-b12/2f38c3b165be4555a1fa6e98c45e0808"
+
+oracle_jdk_package_name: jdk1.{{ jdk_major_version }}.0_{{ jdk_minor_version }}.x86_64
+oracle_jdk8_rpm: jdk-{{ jdk_major_version }}u{{ jdk_minor_version }}-linux-x64.rpm
+oracle_jdk8_url: http://download.oracle.com/otn-pub/java/jdk/{{ jdk_download_path }}/{{ oracle_jdk8_rpm }}
+
+
+# JManage 
+jmanage_src: https://master.dl.sourceforge.net/project/jmanage/jmanage%202.0/jmanage%202.0-RC1/jmanage-2.0-RC1.tar.gz
+jmanageService_src: http://jexcellente.googlepages.com/jmanage-service.zip
+
+jmanage_home: /opt/Jmanage-2.0-RC1
+jmanage_user: jmanage
+jmanage_pass: jmanage
+jmanageService: /opt/JmanageService
+profile: /etc/profile.d
+

@@ -1,0 +1,11 @@
+---
+- name: Deploying Jenkins war file.
+  copy: 
+       src: "{{ role_path }}/files/jenkins.war" 
+       dest: /usr/share/tomcat/webapps/
+      
+- name: Restart Tomcat
+  shell: cd /usr/share/tomcat/bin/; nohup sh "{{ item }}" </dev/null >/dev/null 2>&1 &
+  with_items:
+     - /usr/share/tomcat/bin/shutdown.sh
+     - /usr/share/tomcat/bin/startup.sh 

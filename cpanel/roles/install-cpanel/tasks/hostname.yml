@@ -1,0 +1,5 @@
+---
+- name: Setting hostname
+  hostname:
+    name: "{{ ansible_fqdn }}"
+  tags: cpanel

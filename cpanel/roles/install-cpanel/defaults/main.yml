@@ -1,0 +1,29 @@
+---
+# YUM
+centos_core_packages:
+  - htop
+  - rsync
+  - vim
+  - nano
+  - curl
+  - wget
+  - python
+  - python-pip
+  - curl-devel
+  - hdparm
+  - python-setuptools
+  - gcc
+  - python-devel
+
+gpg_keys:
+  - RPM-GPG-KEY-rpmforge-dag
+  - RPM-GPG-KEY-EPEL-6
+
+repo_rpms:
+  - http://repoforge.eecs.wsu.edu/redhat/el6/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
+  - http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+
+### PYTHON
+python_packages:
+  - pip 
+  - passlib

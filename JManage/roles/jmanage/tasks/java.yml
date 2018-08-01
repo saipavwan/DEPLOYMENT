@@ -1,0 +1,15 @@
+- name: Download JDK 1.8 from Oracle
+  get_url:
+    headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
+    url: '{{ oracle_jdk8_url }}'
+    dest: /tmp
+
+- name: Check for existing Oracle JDK 8
+  yum:
+    list: '{{ oracle_jdk_package_name }}'
+  register: existing_jdk8
+
+- name: Install Java from downloaded RPM file
+  yum:
+    name: /tmp/{{ oracle_jdk8_rpm }}
+  when: not(existing_jdk8.results | length)

@@ -1,0 +1,46 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    package: "httpd"
+    welcome_page: "/etc/httpd/conf.d/welcome.conf"
+
+  tasks:
+  - name: Install Apache webserver
+    yum:
+       name: "{{ package }}"
+       state: latest
+
+  - name: Start Apache Service
+    service:
+       name: "{{ package }}"
+       state: started
+ 
+
+  - name: enable Apache Service
+    service: 
+       name: "{{ package }}"
+       enabled: yes
+
+  - name: Check apache service
+    command: service httpd status
+    register: apache_status
+
+  - debug: var=apache_status.stdout_lines
+
+  - name: Disable the pre-set Apache welcome page
+    shell: "sed -i 's/^/#&/g' {{ welcome_page}}"
+
+  - name: Copy your own html page
+    template:
+        src: ./index.html
+        dest: /var/www/html
+    notify: Restart Apache
+
+  handlers:
+  - name: Restart Apache
+    service: 
+       name: httpd
+       service: restarted

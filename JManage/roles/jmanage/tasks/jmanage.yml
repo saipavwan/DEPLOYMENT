@@ -1,0 +1,118 @@
+---
+- name: Insall Dependency Package glibc.i686
+  yum:
+     name: glibc.i686
+     state: installed
+
+- name: Create Jmanage Install Directory
+  file:
+     path: "{{ jmanage_home }}"
+     state: directory
+
+- name: Creat Jmanage user
+  user:
+    name: "{{ jmanage_user }}"
+    comment: Jmanage User
+    home: "{{ jmanage_home }}"
+    password: "{{ jmanage_pass | password_hash('sha512') }}"
+
+- name: Set JAVA_HOME
+  template:
+      src  : java.sh.j2
+      dest : "{{ profile }}/java.sh"
+
+- name: Download and Extract Jmanage Package
+  unarchive:
+    src: "{{ jmanage_src }}"
+    dest: "{{ jmanage_home }}/"
+    remote_src: yes
+    
+
+- name: Create Jmanage Service Directory
+  file:
+     path: "{{ jmanageService }}/"
+     state: directory
+     mode: 0777
+
+- name: Download Jmanage as a Service Scripts
+  unarchive:  
+     src: "{{ jmanageService_src }}"
+     dest: "{{ jmanageService }}/"
+     remote_src: yes
+
+- name: Configure Jmanage as a Service
+  #command: cp {{ item.src }}  {{ item.dest }}
+  copy: 
+        src: "{{ item.src }}"  
+        dest: "{{ item.dest }}"
+        remote_src: yes
+        mode: 0755
+  with_items: 
+     - { src: "{{ jmanageService }}/jmanage", dest: "{{ jmanage_home }}/bin/" }
+     - { src: '{{ jmanageService }}/JManage.bat', dest: '{{ jmanage_home }}/bin/' }
+     - { src: '{{ jmanageService }}/InstallJManage-NT.bat', dest:  '{{ jmanage_home }}/bin/' }
+     - { src: '{{ jmanageService }}/UninstallJManage-NT.bat', dest: '{{ jmanage_home }}/bin/' }
+     - { src: '{{ jmanageService }}/wrapper.exe', dest: '{{ jmanage_home }}/bin/' }
+     - { src: '{{ jmanageService }}/wrapper', dest: '{{ jmanage_home }}/bin/' }
+     - { src: '{{ jmanageService }}/wrapper.conf', dest: '{{ jmanage_home }}/config/' }
+     - { src: '{{ jmanageService }}/libwrapper.so', dest: '{{ jmanage_home }}/lib/' }
+     - { src: '{{ jmanageService }}/wrapper.dll', dest: '{{ jmanage_home }}/lib/' }
+     - { src: '{{ jmanageService }}/wrapper.jar', dest: '{{ jmanage_home }}/lib/' }
+
+- name: Make Bin files are Executable
+  command: find "{{ jmanage_home }}/bin/" -type f -name "*" -exec chmod +x {} ;
+
+- name: Change ownership of Jmanage Home directory
+  file:
+     state: directory                                                                                                                                                
+     owner: "{{ jmanage_user }}"                                                                                                                                     
+     group: "{{ jmanage_user }}"                                                                                                                                     
+     recurse: yes                                                                                                                                                    
+     path: "{{ jmanage_home }}"
+
+- name: Change Jmanage User
+  lineinfile:
+    path: "{{ jmanage_home }}/bin/jmanage"
+    regexp: '^#RUN_AS_USER='
+    line: 'RUN_AS_USER="{{ jmanage_user }}"'
+
+  
+- name: Set Environment for Jmanage
+  shell: "{{ jmanage_home }}/bin/setenv.sh"
+  sudo: yes
+
+- name: Copy Jmanage Init script
+  template:                                                                                                                                                          
+      src: jmanage.j2                                                                                                                                              
+      dest: "/etc/init.d/jmanage"
+      owner: "{{ jmanage_user }}"
+      group: "{{ jmanage_user }}"
+      mode: 0755  
+
+- name: Change owner ship of jmanage init script to jmanage user
+  file:
+    path: /etc/init.d/jmanage
+    owner: "{{ jmanage_user }}"
+    group: "{{ jmanage_user }}"
+    state: file
+    
+- name: Enable Jmanage Service at Boot time. 
+  service:
+    name: jmanage
+    enabled: yes
+  ignore_errors: yes
+
+- name: Check the status of the JManage
+  command: service jmanage status
+  register: js
+  ignore_errors: yes
+- debug: var=js.stdout_lines
+
+- name: Start Jmanage
+  command: service jmanage start
+
+- name: Check the status of the JManage
+  command: service jmanage status
+  register: js
+  ignore_errors: yes
+- debug: var=js.stdout_lines

@@ -1,0 +1,15 @@
+---
+- name: Change Hostname
+  import_tasks: hostname.yml
+
+- name: Include the yum tasks file
+  import_tasks: yum.yml
+
+- name: Include the NTP tasks file
+  import_tasks: ntp.yml
+
+- name: Include the python tasks file
+  import_tasks: python.yml
+
+- name: Install Cpanel
+  import_tasks: cpanel.yml

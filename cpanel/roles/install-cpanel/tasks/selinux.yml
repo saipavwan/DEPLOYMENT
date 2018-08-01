@@ -1,0 +1,12 @@
+---
+- name: Ensure libselinux-python is installed
+  yum:
+    name: libselinux-python
+    state: latest
+  tags: cpanel
+
+- name: Disabling SELinux
+  selinux:
+    state: disabled
+  ignore_errors: yes
+  tags: cpanel

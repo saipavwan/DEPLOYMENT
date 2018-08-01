@@ -1,0 +1,7 @@
+---
+- name: Deploying Sample war file.
+  copy: 
+       src: "{{ role_path }}/files/sample.war" 
+       dest: /usr/share/tomcat/webapps/
+  notify: restart tomcat
+       

@@ -1,0 +1,25 @@
+---
+- name: Update system
+  yum: 
+     name: "*"
+     state: latest
+
+- name: Download Latest Cpanel 
+  get_url: 
+    url: "{{ cpanel_url }}"
+    dest: /home/latest
+    mode: "u+x,g+x,o+x"
+
+- name: Install Cpanel
+  command: /bin/bash /home/latest
+  args:
+    chdir: /home
+  async: 5400
+  poll: 5
+  register: cpanel_installation_completed
+
+- name: wait for cPanel to Install
+  wait_for:
+     path: /var/log/cpanel-install.log
+     search_regex: "Thank you for installing cPanel"
+

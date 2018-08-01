@@ -1,0 +1,10 @@
+---
+- hosts: apache
+  become: true
+  gather_facts: yes
+  roles:
+   - epel-repo
+   - prereqs
+   - httpd
+   - mariadb
+   - code_deploy

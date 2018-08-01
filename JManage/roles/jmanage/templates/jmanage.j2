@@ -1,0 +1,52 @@
+#!/bin/bash
+# description: init script to JManage.
+export JRE_HOME=/usr/java/jdk1.{{ jdk_major_version }}.0_{{ jdk_minor_version }}/jre
+export PATH=$PATH:$JRE_HOME/bin
+export JAVA_HOME=/usr/java/jdk1.{{ jdk_major_version }}.0_{{ jdk_minor_version }}
+export JAVA_PATH=$JAVA_HOME
+export PATH=$PATH:$JAVA_HOME/bin
+
+RETVAL=0                                                                                                                                                                                                                                                                                                                                                    
+. /etc/init.d/functions                                                                                                                                                                     
+                                                                                                                                                                                            
+jmanage_start() {                                                                                                                                                                            
+  echo Starting jmanage...                                                                                                                                                                   
+  "{{ jmanage_home }}/bin/jmanage" start                                                                                                                           
+  RETVAL=$?                                                                                                                                                                                 
+}                                                                                                                                                                                           
+jmanage_stop() {                                                                                                                                                                             
+  echo Stopping jmanage...                                                                                                                                                                   
+  "{{ jmanage_home }}/bin/jmanage" stop                                                                                                                                                    
+  RETVAL=$?                                                                                                                                                                                 
+}                                                                                                                                                                                           
+jmanage_restart() {                                                                                                                                                                          
+  echo Restarting jmanage...                                                                                                                                                                 
+  "{{ jmanage_home }}/bin/jmanage" restart                                                                                                                                                 
+  RETVAL=$?                                                                                                                                                                                 
+}                                                                                                                                                                                           
+jmanage_status() {                                                                                                                                                                           
+  echo jmanage status:                                                                                                                                                                       
+  "{{ jmanage_home }}/bin/jmanage" status                                                                                                                                                  
+  RETVAL=$?                                                                                                                                                                                 
+}                                                                                                                                                                                           
+case "$1" in                                                                                                                                                                                
+  start)                                                                                                                                                                                    
+    jmanage_start                                                                                                                                                                            
+    ;;                                                                                                                                                                                      
+  stop)                                                                                                                                                                                     
+    jmanage_stop                                                                                                                                                                             
+    ;;                                                                                                                                                                                      
+  restart)                                                                                                                                                                                  
+    jmanage_restart                                                                                                                                                                          
+    ;;                                                                                                                                                                                      
+  status)                                                                                                                                                                                   
+    jmanage_status                                                                                                                                                                           
+    ;;                                                                                                                                                                                      
+  *) 
+    echo "Usage: $0 {start|stop|restart|status}"                                                                                                                                            
+    exit 1                                                                                                                                                                                  
+    ;;                                                                                                                                                                                      
+esac                                                                                                                                                                                        
+                                                                                                                                                                                            
+exit $RETVAL                                                                                                                                                                                
+                           
